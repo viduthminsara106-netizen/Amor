@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "viduthminsara106@gmail.com" ||
+         request.auth.token.email == "0711452778@auratrade.com" ||
+         request.auth.token.email == "12345678@auratrade.com" ||
+         request.auth.token.email == "0711452788@auratrade.com");
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isNotBanned() {
+      return !isAuthenticated() || 
+             !exists(/databases/$(database)/documents/users/$(request.auth.uid)) ||
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'banned';
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'mobile', 'balance']) &&
+             data.balance is number &&
+             data.mobile is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && isNotBanned();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isAdmin() || (isOwner(userId) && isNotBanned() && 
+                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) || request.resource.data.role == resource.data.role) &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasAny(['lastTradeTime', 'dailyTradesDone', 'balance', 'totalProfits', 'totalAssets', 'lastSignInDate', 'lastDailyBonusClaimDate', 'withdrawableBalance', 'savedBankDetails']));
+      allow delete: if isAdmin();
+    }
+
+    match /deposits/{depositId} {
+      allow read: if (isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid)) && isNotBanned();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isNotBanned();
+      allow update, delete: if isAdmin();
+    }
+
+    match /withdrawals/{withdrawalId} {
+      allow read: if (isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid)) && isNotBanned();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isNotBanned();
+      allow update, delete: if isAdmin();
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if (isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid)) && isNotBanned();
+      allow write: if isAdmin() || (isAuthenticated() && request.resource.data.uid == request.auth.uid && isNotBanned());
+    }
+
+    match /notifications/{notifId} {
+      allow read: if (isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid)) && isNotBanned();
+      allow update: if isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid && isNotBanned() && 
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']));
+      allow write: if isAdmin();
+    }
+
+    match /ad_tasks/{taskId} {
+      allow read: if isAuthenticated() && isNotBanned();
+      allow write: if isAdmin();
+    }
+
+    match /user_task_completions/{completionId} {
+      allow read: if (isAdmin() || (isAuthenticated() && resource.data.uid == request.auth.uid)) && isNotBanned();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isNotBanned();
+      allow update, delete: if isAdmin();
+    }
+
+    match /gift_keys/{keyId} {
+      allow read: if isAuthenticated() && isNotBanned();
+      allow update: if isAuthenticated() && isNotBanned() && 
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usedCount']) &&
+                    request.resource.data.usedCount == resource.data.usedCount + 1;
+      allow write: if isAdmin();
+    }
+
+    match /platform_settings/{settingId} {
+      allow read: if isAuthenticated() && isNotBanned();
+      allow write: if isAdmin();
+    }
+  }
+}

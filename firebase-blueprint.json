@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and account balance",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "mobile": { "type": "string" },
+        "balance": { "type": "number" },
+        "totalAssets": { "type": "number" },
+        "totalProfits": { "type": "number" },
+        "totalWithdrawals": { "type": "number" },
+        "vipLevel": { "type": "integer" },
+        "referralCode": { "type": "string" },
+        "referredBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["active", "banned"] },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "lastTradeTime": { "type": "string", "format": "date-time" },
+        "dailyTradesDone": { "type": "integer" }
+      },
+      "required": ["uid", "mobile", "balance"]
+    },
+    "Deposit": {
+      "title": "Deposit",
+      "description": "Deposit request",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "amount": { "type": "number" },
+        "bankName": { "type": "string" },
+        "accNo": { "type": "string" },
+        "receiptUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "refNo": { "type": "string" },
+        "remark": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "amount", "refNo", "status"]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal",
+      "description": "Withdrawal request",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "amount": { "type": "number" },
+        "bankDetails": { "type": "object" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "fee": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "amount", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial transaction log",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["deposit", "withdrawal", "trade_profit", "referral_commission"] },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "AdTask": {
+      "title": "Ad Task",
+      "description": "Admin created ad watching tasks",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "adUrl": { "type": "string" },
+        "reward": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "adUrl", "reward"]
+    },
+    "UserTaskCompletion": {
+      "title": "User Task Completion",
+      "description": "Tracks which tasks a user has completed today",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "taskId": { "type": "string" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "taskId", "completedAt"]
+    },
+    "GiftKey": {
+      "title": "Gift Key",
+      "description": "Redeemable gift keys/promo codes",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string" },
+        "reward": { "type": "number" },
+        "maxUses": { "type": "integer" },
+        "usedCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["key", "reward", "maxUses", "usedCount"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/deposits/{depositId}": {
+      "schema": "Deposit",
+      "description": "Deposit requests"
+    },
+    "/withdrawals/{withdrawalId}": {
+      "schema": "Withdrawal",
+      "description": "Withdrawal requests"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Transaction history"
+    },
+    "/ad_tasks/{taskId}": {
+      "schema": "AdTask",
+      "description": "Available ad tasks"
+    },
+    "/user_task_completions/{completionId}": {
+      "schema": "UserTaskCompletion",
+      "description": "User task completion logs"
+    },
+    "/gift_keys/{keyId}": {
+      "schema": "GiftKey",
+      "description": "Redeemable gift keys"
+    },
+    "/platform_settings/{settingId}": {
+      "schema": "object",
+      "description": "Global platform settings"
+    }
+  }
+}

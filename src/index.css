@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-yellow-900: #713f12;
+  --color-yellow-950: #422006;
+}
+
+body {
+  background-color: #f9fafb;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.premium-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(234, 179, 8, 0.1);
+}
+
+.yellow-gradient {
+  background: linear-gradient(135deg, #eab308 0%, #a16207 100%);
+}
+
+.dark-blue-gradient {
+  background: linear-gradient(135deg, #001529 0%, #003366 100%);
+}
+
+.banner-gradient {
+  background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+}
+
+.yellow-text-gradient {
+  background: linear-gradient(135deg, #eab308 0%, #a16207 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #eab308;
+  border-radius: 10px;
+}

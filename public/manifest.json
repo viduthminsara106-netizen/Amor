@@ -1,0 +1,21 @@
+{
+  "name": "AuraTradeLKR",
+  "short_name": "AuraTrade",
+  "description": "Premium LKR Trading Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000814",
+  "theme_color": "#000814",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/auratrade/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/auratrade/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

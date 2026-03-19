@@ -1,0 +1,5 @@
+{
+  "name": "AuraTradeLKR",
+  "description": "Premium LKR Trading Platform with Auto-Bot and Referral System",
+  "requestFramePermissions": ["camera", "geolocation"]
+}
